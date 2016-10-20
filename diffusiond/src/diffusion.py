@@ -1,5 +1,7 @@
 __author__ = 'decarlin'
 
+import logging
+
 class Diffuser:
 
     def __init__(self, networkN):

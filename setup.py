@@ -26,7 +26,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'diffusiond = diffuse'
+          'diffusiond = diffuse:main'
         ]
     },
     install_requires=[
