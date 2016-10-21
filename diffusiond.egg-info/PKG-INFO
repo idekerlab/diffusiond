@@ -1,0 +1,20 @@
+Metadata-Version: 1.1
+Name: diffusiond
+Version: 0.1.0
+Summary: Heat diffusion daemon
+Home-page: https://github.com/ericsage/diffusiond
+Author: Daniel Carlin, Keiichiro Ono, Eric Sage
+Author-email: eric.david.sage@gmail.com
+License: MIT License
+Description: Sub-network finder using heat diffusion simulation
+Keywords: bioinformatics,graph,network,cytoscape
+Platform: UNKNOWN
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 2.7
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Scientific/Engineering :: Mathematics
