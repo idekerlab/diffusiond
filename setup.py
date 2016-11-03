@@ -30,6 +30,8 @@ setup(
         ]
     },
     install_requires=[
+        'numpy',
+        'scipy',
         'ndex'
     ],
     keywords=['bioinformatics', 'graph', 'network', 'cytoscape'],
