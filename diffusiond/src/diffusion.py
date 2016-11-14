@@ -12,7 +12,6 @@ class Diffuser:
 
     def __init__(self, networkN, time=0.1, normalize=True, input_vector=None,diffuse_key='DiffuseThis',calculate_kernel=False, normalize_laplacian=False):
         logging.info('Diffuser: Initializing')
-        #TODO: Process networkN
         self.network = networkN
         self.time_T = time
         self.calculate_kernel=calculate_kernel
@@ -36,10 +35,16 @@ class Diffuser:
         """Diffuses the selected nodes against the network"""
         logging.info('Diffuser: Starting diffusion')
         #TODO: Perform diffusion
+<<<<<<< HEAD
         if self.calculate_kernel:
             logging.info('Diffuser: Calculating kernel')
             self.calculateKernel(self.L)
             
+=======
+        logging.info('Diffuser: Calculating kernel')
+        self.calculateKernel(nx.laplacian_matrix(nx.Graph(self.network)))
+
+>>>>>>> d08014c405a8fcc89801d4f93a52fc2a2821a9ce
         if self.input_vector is not None:
             if self.calculate_kernel:
                 self.out_vector=self.kernel.dot(self.input_vector)

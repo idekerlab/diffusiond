@@ -12,6 +12,7 @@ def diffuse(CX):
     """Diffuses a network represented as cx against an identifier_set"""
     logging.info('Converting the CX json to the SIF format')
     networkN = CXToNetworkN(CX)
+    print networkN
     logging.info('Creating new Diffuser')
     diffuser = Diffuser(networkN)
     logging.info('Starting diffusion')
