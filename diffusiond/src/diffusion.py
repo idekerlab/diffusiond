@@ -10,7 +10,7 @@ import networkx as nx
 
 class Diffuser:
 
-    def __init__(self, networkN, time=0.1, normalize=True, input_vector=None,diffuse_key='DiffuseThis',calculate_kernel=False, normalize_laplacian=False):
+    def __init__(self, networkN, time=0.1, normalize=True, input_vector=None,diffuse_key='diffusion_input',calculate_kernel=False, normalize_laplacian=False):
         logging.info('Diffuser: Initializing')
         self.network = networkN
         self.time_T = time
@@ -35,16 +35,13 @@ class Diffuser:
         """Diffuses the selected nodes against the network"""
         logging.info('Diffuser: Starting diffusion')
         #TODO: Perform diffusion
-<<<<<<< HEAD
+
         if self.calculate_kernel:
             logging.info('Diffuser: Calculating kernel')
             self.calculateKernel(self.L)
             
-=======
         logging.info('Diffuser: Calculating kernel')
         self.calculateKernel(nx.laplacian_matrix(nx.Graph(self.network)))
-
->>>>>>> d08014c405a8fcc89801d4f93a52fc2a2821a9ce
         if self.input_vector is not None:
             if self.calculate_kernel:
                 self.out_vector=self.kernel.dot(self.input_vector)
@@ -52,7 +49,7 @@ class Diffuser:
                 self.out_vector=expm_multiply(-self.L,self.input_vector,start=0,stop=0.1,endpoint=True)[-1]
             
             node_dict=dict([(self.network.node.keys()[i],self.out_vector[i]) for i in range(len(self.network.node.keys()))])
-            nx.set_node_attributes(self.network,'DiffusedOutput',node_dict)
+            nx.set_node_attributes(self.network,'diffused_output',node_dict)
         logging.info('Diffuser: Diffusion completed')
         return self.network
 
