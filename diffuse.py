@@ -18,7 +18,7 @@ def networkN_to_CX(networkN):
     return networkN.to_cx()
 
 @app.route('/diffuse', methods=['POST'])
-def diffuse()
+def diffuse():
     """Diffuses a network represented as cx against an identifier_set"""
     CX = requst.get_json()
     if CX == None:
