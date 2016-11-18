@@ -22,7 +22,7 @@ def networkN_to_CX(networkN):
 @app.route('/', methods=['POST'])
 def diffuse():
     """Diffuses a network represented as cx against an identifier_set"""
-    CX = requst.get_json()
+    CX = request.get_json()
     if CX == None:
         return 415
     logging.info('Converting the CX json to the SIF format')
