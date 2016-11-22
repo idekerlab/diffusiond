@@ -9,6 +9,8 @@ from ndex.networkn import NdexGraph
 
 from diffusiond.src.diffusion import Diffuser
 
+app = Flask(__name__)
+
 def CX_to_NetworkN(CX):
     """Converts cx terms into a NetworkN object"""
     return NdexGraph(CX)
@@ -17,10 +19,10 @@ def networkN_to_CX(networkN):
     """Converts networkN into CX terms"""
     return networkN.to_cx()
 
-@app.route('/diffuse', methods=['POST'])
+@app.route('/', methods=['POST'])
 def diffuse():
     """Diffuses a network represented as cx against an identifier_set"""
-    CX = requst.get_json()
+    CX = request.get_json()
     if CX == None:
         return 415
     logging.info('Converting the CX json to the SIF format')
@@ -34,5 +36,4 @@ def diffuse():
     return Response(json.dumps(networkN_to_CX(networkN)), status=200, mimetype='application/json')
 
 def main():
-    app = Flask(__name__)
-    app.run()
+    app.run(host='0.0.0.0')
