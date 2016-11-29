@@ -25,7 +25,7 @@ class Diffuser:
             self.input_vector=array([n in input_vector for n in self.node_names])
         elif isinstance(input_vector, dict):
             self.input_vector=array([input_vector[n] if n in input_vector.keys() else 0 for n in self.node_names])
-        elif diffuse_key in self.network.node[0].keys():
+        elif diffuse_key in self.network.node[self.network.nodes()[0]].keys():
             self.input_vector=array([n[diffuse_key] for n in self.network.node.values()])
 
         #self.input_vector=node_attr('DiffuseThisColumn',normalize=self.normalize)

@@ -48,8 +48,8 @@ class Diffuser:
             else:
                 self.out_vector=expm_multiply(-self.L,self.input_vector,start=0,stop=0.1,endpoint=True)[-1]
             
-            node_dict=dict([(self.network.node.keys()[i],self.out_vector[i]) for i in range(len(self.network.node.keys()))])
-            nx.set_node_attributes(self.network,'diffused_output',node_dict)
+            self.node_dict=dict([(self.network.node.keys()[i],self.out_vector[i]) for i in range(len(self.network.node.keys()))])
+            nx.set_node_attributes(self.network,'diffused_output',self.node_dict)
         logging.info('Diffuser: Diffusion completed')
         return self.network
 
