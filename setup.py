@@ -32,7 +32,7 @@ setup(
     install_requires=[
         'numpy',
         'scipy',
-        'ndex',
+        'ndex-dev',
         'Flask'
     ],
     keywords=['bioinformatics', 'graph', 'network', 'cytoscape'],

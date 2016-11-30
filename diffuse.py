@@ -1,11 +1,20 @@
 __author__ = 'decarlin'
 
+"""Diffuses a set of initial node heats against a network.
+
+This module will serve a web application on port 5000 that will accept any
+valid CX network. It will extract a diffuse_input column from the nodeAttributes
+of this network, and use this column to diffuse the specificed nodes with intial heats
+against the network. It will then return a new column of nodes and their heats after diffusion
+has taken place.
+"""
+
 import sys
 import logging
 import json
 
 from flask import request, Response, Flask
-from ndex.networkn import NdexGraph
+from ndex.networkn import NdexGraph, FilterSub
 
 from diffusiond.src.diffusion import Diffuser
 
@@ -19,21 +28,23 @@ def networkN_to_CX(networkN):
     """Converts networkN into CX terms"""
     return networkN.to_cx()
 
-@app.route('/', methods=['POST'])
-def diffuse():
+@app.route('/')
+@app.route('/<int:subnetwork_id>', methods=['POST'])
+def diffuse(subnetwork_id=None):
     """Diffuses a network represented as cx against an identifier_set"""
     CX = request.get_json()
-    if CX == None:
-        return 415
+    if subnetwork_id:
+      logging.info('Extracting subnetwork ' + subnetwork_id + ' from CX')
+      CX = FilterSub(CX, subnetwork_id).get_cx()
     logging.info('Converting the CX json to the SIF format')
     networkN = CX_to_NetworkN(CX)
     print networkN
     logging.info('Creating new Diffuser')
     diffuser = Diffuser(networkN)
     logging.info('Starting diffusion')
-    networkN = diffuser.start()
+    diffuser.start()
     logging.info('Diffusion completed, now returning the ranked entities as json to the caller')
-    return Response(json.dumps(networkN_to_CX(networkN)), status=200, mimetype='application/json')
+    return Response(json.dumps(diffuser.node_dict), status=200, mimetype='application/json')
 
 def main():
     app.run(host='0.0.0.0')
