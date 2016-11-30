@@ -3,7 +3,7 @@ __author__ = 'decarlin'
 import logging
 from numpy import genfromtxt, dot, array
 import math
-from scipy.sparse import coo_matrix
+from scipy.sparse import coo_matrix,csc_matrix
 from scipy.sparse.linalg import expm, expm_multiply
 import networkx as nx
 
@@ -17,16 +17,27 @@ class Diffuser:
         self.calculate_kernel=calculate_kernel
         self.node_names = [self.network.node[n]['name'] for n in self.network.nodes_iter()]
         if normalize_laplacian:
-            self.L=coo_matrix(nx.normalized_laplacian_matrix(nx.Graph(self.network)))
+            self.L=csc_matrix(nx.normalized_laplacian_matrix(nx.Graph(self.network)))
         else:
-            self.L=coo_matrix(nx.laplacian_matrix(nx.Graph(self.network)))
+            self.L=csc_matrix(nx.laplacian_matrix(nx.Graph(self.network)))
 
         if isinstance(input_vector, list):
             self.input_vector=array([n in input_vector for n in self.node_names])
         elif isinstance(input_vector, dict):
             self.input_vector=array([input_vector[n] if n in input_vector.keys() else 0 for n in self.node_names])
-        elif diffuse_key in self.network.node[self.network.nodes()[0]].keys():
-            self.input_vector=array([n[diffuse_key] for n in self.network.node.values()])
+        else:
+            found_heat=False
+            heat_list=list()
+            self.input_vector=array()
+            for n in dif.network.nodes():
+                if diffuse_key in self.network.node[n].keys():
+                    heat_list.append(self.network.node[n][diffuse_key])
+                    found_heat=True
+                else:
+                    heat_list.append(0)
+            if not found_heat:
+                warn('No input heat found')
+            self.input_vector=array(heat.list)
 
         #self.input_vector=node_attr('DiffuseThisColumn',normalize=self.normalize)
         logging.info('Diffuser: Initialization complete')
