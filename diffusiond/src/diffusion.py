@@ -28,8 +28,8 @@ class Diffuser:
         else:
             found_heat=False
             heat_list=list()
-            self.input_vector=array()
-            for n in dif.network.nodes():
+            self.input_vector=array([])
+            for n in self.network.nodes():
                 if diffuse_key in self.network.node[n].keys():
                     heat_list.append(self.network.node[n][diffuse_key])
                     found_heat=True
@@ -37,7 +37,7 @@ class Diffuser:
                     heat_list.append(0)
             if not found_heat:
                 warn('No input heat found')
-            self.input_vector=array(heat.list)
+            self.input_vector=array(heat_list)
 
         #self.input_vector=node_attr('DiffuseThisColumn',normalize=self.normalize)
         logging.info('Diffuser: Initialization complete')
@@ -50,7 +50,7 @@ class Diffuser:
         if self.calculate_kernel:
             logging.info('Diffuser: Calculating kernel')
             self.calculateKernel(self.L)
-            
+
         logging.info('Diffuser: Calculating kernel')
         self.calculateKernel(nx.laplacian_matrix(nx.Graph(self.network)))
         if self.input_vector is not None:
@@ -58,7 +58,7 @@ class Diffuser:
                 self.out_vector=self.kernel.dot(self.input_vector)
             else:
                 self.out_vector=expm_multiply(-self.L,self.input_vector,start=0,stop=0.1,endpoint=True)[-1]
-            
+
             self.node_dict=dict([(self.network.node.keys()[i],self.out_vector[i]) for i in range(len(self.network.node.keys()))])
             nx.set_node_attributes(self.network,'diffused_output',self.node_dict)
         logging.info('Diffuser: Diffusion completed')
