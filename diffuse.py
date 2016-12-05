@@ -33,14 +33,11 @@ def networkN_to_CX(networkN):
 def diffuse(subnetwork_id=None):
     """Diffuses a network represented as cx against an identifier_set"""
     CX = request.get_json()
-    print CX
     if subnetwork_id != None:
       logging.info('Extracting subnetwork ' + str(subnetwork_id) + ' from CX')
-      CX = FilterSub(CX, subnetwork_id).get_cx()
-      print CX
+      CX = FilterSub(CX, subnetwork_id=subnetwork_id).get_cx()
     logging.info('Converting the CX json to the SIF format')
     networkN = CX_to_NetworkN(CX)
-    print networkN.nodes()
     logging.info('Creating new Diffuser')
     diffuser = Diffuser(networkN)
     logging.info('Starting diffusion')
@@ -50,6 +47,4 @@ def diffuse(subnetwork_id=None):
 
 def main():
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-    logging.info(NdexGraph)
-    print NdexGraph
     app.run(host='0.0.0.0')
