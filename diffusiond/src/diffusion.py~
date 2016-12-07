@@ -63,7 +63,7 @@ class Diffuser:
             sorted_diffused = sorted(dif.node_dict.items(), key=operator.itemgetter(1), reverse=True)
             self.node_dict_rank=dict([(sorted_diffused[i][0],i) for i in range(len(sorted_diffused))])
             nx.set_node_attributes(self.network,'diffused_output',self.node_dict)
-            nx.set_node_attributes(self.network,'diffused_ouput_rank',self.node_dict_rank)
+            nx.set_node_attributes(self.network,'diffused_output_rank',self.node_dict_rank)
         logging.info('Diffuser: Diffusion completed')
         return self.network
 

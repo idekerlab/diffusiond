@@ -52,7 +52,7 @@ class Diffuser:
             self.calculateKernel(self.L)
 
         logging.info('Diffuser: Calculating kernel')
-        self.calculateKernel(nx.laplacian_matrix(nx.Graph(self.network)))
+
         if self.input_vector is not None:
             if self.calculate_kernel:
                 self.out_vector=self.kernel.dot(self.input_vector)
