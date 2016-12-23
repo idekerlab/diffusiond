@@ -90,3 +90,6 @@ ENV/
 
 #Vim editor files
 *~
+
+#Cytoscape CX documents
+*.cx
