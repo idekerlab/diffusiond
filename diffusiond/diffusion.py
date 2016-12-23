@@ -2,7 +2,9 @@ __author__ = 'decarlin'
 
 import logging
 from numpy import genfromtxt, dot, array
+import ast
 import math
+import operator
 from scipy.sparse import coo_matrix,csc_matrix
 from scipy.sparse.linalg import expm, expm_multiply
 import networkx as nx
@@ -10,11 +12,15 @@ import networkx as nx
 
 class Diffuser:
 
-    def __init__(self, networkN, time=0.1, normalize=True, input_vector=None,diffuse_key='diffusion_input',calculate_kernel=False, normalize_laplacian=False):
+    def __init__(self, networkN, options):
         logging.info('Diffuser: Initializing')
         self.network = networkN
-        self.time_T = time
-        self.calculate_kernel=calculate_kernel
+        self.time_T = options.get('time', 0.1, float),
+        self.calculate_kernel = options.get('kernel', 'False') == 'True'
+        input_vector= options.get('heatvector', None, ast.literal_eval)
+        diffuse_key= options.get('heatattribute', 'diffusion_input')
+        normalize_laplacian = options.get('normalize', 'False') == 'True'
+
         self.node_names = [self.network.node[n]['name'] for n in self.network.nodes_iter()]
         if normalize_laplacian:
             self.L=csc_matrix(nx.normalized_laplacian_matrix(nx.Graph(self.network)))
@@ -36,7 +42,7 @@ class Diffuser:
                 else:
                     heat_list.append(0)
             if not found_heat:
-                warn('No input heat found')
+                raise Exception('No input heat found')
             self.input_vector=array(heat_list)
 
         #self.input_vector=node_attr('DiffuseThisColumn',normalize=self.normalize)
@@ -60,7 +66,7 @@ class Diffuser:
                 self.out_vector=expm_multiply(-self.L,self.input_vector,start=0,stop=0.1,endpoint=True)[-1]
 
             self.node_dict=dict([(self.network.node.keys()[i],self.out_vector[i]) for i in range(len(self.network.node.keys()))])
-            sorted_diffused = sorted(dif.node_dict.items(), key=operator.itemgetter(1), reverse=True)
+            sorted_diffused = sorted(self.node_dict.items(), key=operator.itemgetter(1), reverse=True)
             self.node_dict_rank=dict([(sorted_diffused[i][0],i) for i in range(len(sorted_diffused))])
             nx.set_node_attributes(self.network,'diffused_output',self.node_dict)
             nx.set_node_attributes(self.network,'diffused_output_rank',self.node_dict_rank)
@@ -80,4 +86,4 @@ class Diffuser:
                         fh.write('\t'.join([self.node_names[i],self.node_names[j],str(self.kernel[i,j]*1000)])+'\n')
             fh.close()
         else:
-            warn('No kernel calcualted')
+            raise Exception('No kernel calcualted')
