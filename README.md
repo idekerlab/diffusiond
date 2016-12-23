@@ -1,6 +1,6 @@
 Diffusiond
 ==========
-Provides a daemon capable of servicing heat diffusion tasks on networks provided as cx or stored in NDEx
+Provides a daemon capable of servicing heat diffusion tasks on networks provided as cx or stored in NDEx.  For details see the manuscript "Network propagation in the Cytoscape Cyberinfrastructure. Carlin DE et al. Submitted to PLoS Computational Biology."
 
 POST diffuse.cytoscape.io
 -------------------------
@@ -21,7 +21,7 @@ Parameters
 | Key           | Type         | Default Value       | Description                                                        |
 | ------------- | :----------: | :-----------------: | :----------------------------------------------------------------- |
 | subnetworkid  | Integer      | None                | A Cytoscape subnetwork to be extracted from a Collection           |
-| time          | Double       | 0.1                 |                                                                    |
+| time          | Double       | 0.1                 | Parameter t from equation 1 of the manuscript to indicate the extent of spread over the network |
 | kernel        | Boolean      | False               | Should the diffuser calculate an intermediate kernel               |
 | heatvector    | List or Dict | None                | Node heats encoded in the query string, overrides CX encoded heats |
 | heatattribute | String       | 'diffusion_input'   | The node attribute that contains the initial node heat as a Double |
