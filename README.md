@@ -9,7 +9,7 @@ The only route provided by this service is / the top level. Use this route to di
 Body
 ----
 
-MIME type must be `applicaiton/json`
+MIME type must be `application/json`
 
 The body must be a CX document, which will be encoded as JSON. If a heatvector is not given in the query string parameters, at least
 one node needs to have a node attribute called 'diffusion_input' or whatever the query string parameter heatattribute is set to. The value
