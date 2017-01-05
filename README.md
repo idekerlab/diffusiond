@@ -1,23 +1,29 @@
 #Diffusiond
-Provides a daemon capable of servicing heat diffusion tasks on networks provided as cx or stored in NDEx.  For details see the manuscript "Network propagation in the Cytoscape Cyberinfrastructure. Carlin DE et al. Submitted to PLoS Computational Biology."
+Provides a daemon capable of servicing heat diffusion tasks on networks provided as CX or stored in NDEx.  The service operates according to REST protocols. For details see the manuscript "Network propagation in the Cytoscape Cyberinfrastructure. Carlin DE et al. Submitted to PLoS Computational Biology."
 
 ##POST diffuse.cytoscape.io
 The only route provided by this service is / the top level. Use this route to diffuse a vector of node heats against a network.
 
 
 ###Input
-The service recieves input through the body of a POST request and optionally through the request's query string parameters. Read below for more information about the expected format of the body and the available query string paramters that you can use to tweak the heat diffusion algorithm.
+The service recieves input through the body of a POST request and optionally through the request's query string parameters. Read below for more information about the expected format of the body and the query string paramters that you can use to tweak the heat diffusion algorithm.
 
 ####Request Body
 
 MIME type must be `application/json`
 
-The body must be a CX document, which will be encoded as JSON. If a heatvector is not given in the query string parameters, at least
-one node needs to have a node attribute called 'diffusion_input' or whatever the query string parameter heatattribute is set to. The value
-of this attribute must be a Double in the range 0 to 1 representing the initial node heat.
+The body must be a CX document containing the network, and is encoded as JSON. 
 
 ###Query String Parameters
-Query string parameters can be used to tweak the heat diffusion alogrithm and also to send a base64 encoded list or dictionary of node heats via the heatvector parameter. Sending the heatvector parameters will override any initial heats set in the CX body. For example, you can create the correct query string value in Python like so:
+Query string parameters can be used to tweak the heat diffusion alogrithm.
+
+A heatvector parameter is a list of nodes and their heat values, specified as Doubles (in the range 0..1) either as attributes
+associated with network nodes (in the CX encodeing) or as a list in the query string. The attribute containing the heat value
+is named by the heatattribute query string parameter, and has a default of "diffusion_input". If the heatvector is specified
+as a query string parameter, it overrides any node attribute in the CX body, and must be encoded in base64 as a Python-style 
+list or dictionary.
+
+For example, you can create the correct query string value in Python like so:
 
 ```python
 import base64
