@@ -14,14 +14,19 @@ MIME type must be `application/json`
 
 The body must be a CX document containing the network, and is encoded as JSON. 
 
+The heatvector can be encoded as node attributes within the network (as Doubles in the range 0..1) or as a query string parameter.
+If it is encode in the network, nodes having heat values must provide the value in "diffusion_input" node attribute. An alternate
+node attribute name can be specified as a query string parameter.
+
 ###Query String Parameters
 Query string parameters can be used to tweak the heat diffusion alogrithm.
 
-A heatvector parameter is a list of nodes and their heat values, specified as Doubles (in the range 0..1) either as attributes
-associated with network nodes (in the CX encodeing) or as a list in the query string. The attribute containing the heat value
-is named by the heatattribute query string parameter, and has a default of "diffusion_input". If the heatvector is specified
-as a query string parameter, it overrides any node attribute in the CX body, and must be encoded in base64 as a Python-style 
-list or dictionary.
+Instead of specifying heat values as network node attributes, they can be provided in the heatvector query string parameter, which 
+is a base64 encoding of a Python list or dictionary. If the heatvector is specified, any heat values encoded in network attributes
+are ignored.
+
+If no heatvector is provided, heat values must be specified as network node attributes per the Request Body section 
+above. The attribute name must be "diffusion_input", but can be overridden by the heatattribute query parameter.
 
 For example, you can create the correct query string value in Python like so:
 
@@ -46,7 +51,7 @@ print 'The query string is ' + '?heatvector=' + encoded_vector
 | normalize     | Boolean      | False               | Should the Lappachian matrix be normalized                         |
 
 ###Output
-The heat diffusion service always responds with a json object containing two keys, data and error. If the service could complete your request, data should be a dictonary of node names with heat and rank objects as values. Here is a sample call below using curl:
+The heat diffusion service always responds with a json object containing two keys: data and error. If the service could complete your request, data will be a dictonary of node names with heat and rank objects as values. Here is a sample call below using curl:
 
 ```bash 
 curl -X POST -H "Content-Type: application/json" --data "@input.cx" diffuse.cytoscape.io
@@ -64,7 +69,7 @@ curl -X POST -H "Content-Type: application/json" --data "@input.cx" diffuse.cyto
 }
 ```
 
-If the call was not succesful, there should be an error object in the list of errors. Here is a sample bad call below using curl:
+If the call was not successful, the error object will return a list of errors. Here is a sample bad call below using curl:
 
 ```bash 
 curl -X POST -H "Content-Type: application/json" diffuse.cytoscape.io
