@@ -55,7 +55,8 @@ curl -X POST -H "Content-Type: application/json" --data "@input.cx" diffuse.cyto
     }
   }, 
   "errors": []
-}```
+}
+```
 
 If the call was not succesful, there should be an error object in the list of errors. Here is a sample bad call below using curl:
 
@@ -71,4 +72,5 @@ curl -X POST -H "Content-Type: application/json" diffuse.cytoscape.io
       "message": "400: Bad Request, did you send a CX body?"
     }
   ]
-}```
+}
+```
