@@ -4,11 +4,11 @@ import logging
 from numpy import genfromtxt, dot, array
 import ast
 import math
+import base64
 import operator
 from scipy.sparse import coo_matrix,csc_matrix
 from scipy.sparse.linalg import expm, expm_multiply
 import networkx as nx
-
 
 class Diffuser:
 
@@ -17,9 +17,12 @@ class Diffuser:
         self.network = networkN
         self.time_T = options.get('time', 0.1, float),
         self.calculate_kernel = options.get('kernel', 'False') == 'True'
-        input_vector= options.get('heatvector', None, ast.literal_eval)
+        input_vector= options.get('heatvector', '')
         diffuse_key= options.get('heatattribute', 'diffusion_input')
         normalize_laplacian = options.get('normalize', 'False') == 'True'
+
+        if input_vector != '':
+            input_vector = json.loads(base64.b64decode(input_vector))
 
         self.node_names = [self.network.node[n]['name'] for n in self.network.nodes_iter()]
         if normalize_laplacian:
