@@ -54,7 +54,6 @@ class Diffuser:
     def start(self):
         """Diffuses the selected nodes against the network"""
         logging.info('Diffuser: Starting diffusion')
-        #TODO: Perform diffusion
 
         if self.calculate_kernel:
             logging.info('Diffuser: Calculating kernel')
