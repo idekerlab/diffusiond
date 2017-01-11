@@ -1,9 +1,8 @@
-__author__ = 'decarlin'
-
 import logging
 from numpy import genfromtxt, dot, array
 import ast
 import math
+import json
 import base64
 import operator
 from scipy.sparse import coo_matrix,csc_matrix
@@ -13,7 +12,6 @@ import networkx as nx
 class Diffuser:
 
     def __init__(self, networkN, options):
-        logging.info('Diffuser: Initializing')
         self.network = networkN
         self.time_T = options.get('time', 0.1, float),
         self.calculate_kernel = options.get('kernel', 'False') == 'True'
@@ -48,18 +46,11 @@ class Diffuser:
                 raise Exception('No input heat found')
             self.input_vector=array(heat_list)
 
-        #self.input_vector=node_attr('DiffuseThisColumn',normalize=self.normalize)
-        logging.info('Diffuser: Initialization complete')
-
     def start(self):
         """Diffuses the selected nodes against the network"""
-        logging.info('Diffuser: Starting diffusion')
 
         if self.calculate_kernel:
-            logging.info('Diffuser: Calculating kernel')
             self.calculateKernel(self.L)
-
-        logging.info('Diffuser: Calculating kernel')
 
         if self.input_vector is not None:
             if self.calculate_kernel:
@@ -72,7 +63,6 @@ class Diffuser:
             self.node_dict_rank=dict([(sorted_diffused[i][0],i) for i in range(len(sorted_diffused))])
             nx.set_node_attributes(self.network,'diffused_output',self.node_dict)
             nx.set_node_attributes(self.network,'diffused_output_rank',self.node_dict_rank)
-        logging.info('Diffuser: Diffusion completed')
         return self.network
 
     def calculateKernel(self,L):

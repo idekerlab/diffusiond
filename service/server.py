@@ -1,5 +1,4 @@
-__author__ = 'ericsage'
-
+#!/bin/python
 """Diffuse a set of node heats against a network.
 
 A web service that listens on port 80 for a single top level route. Request must be a POST
@@ -15,10 +14,10 @@ from gevent.wsgi import WSGIServer
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import default_exceptions
 from werkzeug.exceptions import HTTPException
-
 from ndex.networkn import NdexGraph, FilterSub
 
-from diffusiond.diffusion import Diffuser
+import config
+import diffuser
 
 app = Flask(__name__)
 
@@ -37,109 +36,119 @@ def jsonApp(app):
             app.register_error_handler(code, make_json_error)
     return app
 
-def logTime(timer, message):
-    """Logs a standard message indicating an elapsed time"""
-    logging.info('It took ' + str(time.time()-timer) + ' seconds to ' + message)
+def get_log(message_type, message=''):
+    return { 'code': message_type, 'message': config.LOG_MESSAGES[message_type] +  str(message)}
+
+def log_info(message_type, message=''):
+    if config.LOGGING:
+        logging.info(get_log(message_type, message))
+
+def get_error(error_type, error=''):
+    return { 'code': error_type, 'message': config.ERROR_MESSAGES[error_type] + str(error)}
+
+def log_error(error_type, error=''):
+    if config.LOGGING:
+        logging.error(get_error(error_type, error))
+
+def raise_exception(error_type, error=''):
+    log_error(error_type, error)
+    raise Exception(get_error(error_type, error))
 
 def CX_to_NetworkN(CX):
     """Converts CX terms into a NetworkN object"""
     try:
-        timer = time.time()
-        logging.info('Converting the CX structure to a NetworkN object')
+        log_info('CONVERTING_CX')
         networkN = NdexGraph(CX)
-        logTime(timer, 'create a networkN object')
         return networkN
     except Exception as error:
-        raise Exception('Could not convert CX to a NetworkN object, error: ' + str(error))
+        raise_exception('CX_TO_NETWORKN_CONVERSION_ERROR', error=error)
 
 def extract_json(request):
     """Extracts a JSON body from the request or throws an error"""
-    timer = time.time()
-    logging.info('Extracting json from request')
-    JSON = request.get_json()
+    log_info('EXTRACTING_JSON')
+    JSON = request.get_json('EXTRACT_JSON')
     if JSON == None:
-        logging.error('Recieved None when extracting the JSON body from the request')
-        raise Exception('No JSON body! Make sure the MIME type is application/json and JSON body exists')
-    logTime(timer, 'decode the JSON request')
+        raise_exception('NO_JSON_BODY_ERROR')
     return JSON
 
 def parse_CX_body(request):
     """Parses the request CX document, extracting a subnetwork if one was specified"""
     CX = extract_json(request)
     subnet_id = request.args.get('subnetworkid', None, int)
-    logging.info('Checking for a subnetwork Id')
+    log_info('CHECK_SUBNET_EXISTS')
     if subnet_id:
-        logging.info('Found subnetwork id ' + str(subnet_id))
+        log_info('SUBNET_ID_EXISTS', message=str(subnet_id))
         CX = extract_subnetwork(CX, subnet_id)
     else:
-        logging.info('No subnetwork Id found')
+        log_info('SUBNET_ID_DOES_NOT_EXIST')
     return CX
 
 def extract_subnetwork(CX, subnet_id):
     """Extracts the subnetwork with subnet_id from the CX structure"""
     try:
-        timer = time.time()
-        logging.info('Extracting subnetwork ' + str(subnet_id) + ' from CX')
+        log_info('EXTRACTING_SUBNETWORK')
         CX = FilterSub(CX, subnetwork_id=subnet_id).get_cx()
-        logTime(timer, 'extract the subnetwork')
         return CX
     except Exception as error:
-        raise Exception('Could not extract subnetwork from CX, does the subnetwork exist? Error: ' + str(error))
+        raise_exception('EXTRACTING_SUBNETWORK_ERROR', error=error)
 
 def diffuse(networkN, options):
     """Starts the diffuse and feeds it a network and options dictonary"""
     try:
-        timer = time.time()
-        logging.info('Creating new Diffuser')
-        diffuser = Diffuser(networkN, options)
-        logging.info('Starting diffusion')
-        diffuser.start()
-        logTime(timer, 'diffuse')
-        return (diffuser.node_dict, diffuser.node_dict_rank)
+        log_info('DIFFUSER_INITIALIZING')
+        heat_diffuser = diffuser.Diffuser(networkN, options)
+        log_info('DIFFUSING')
+        heat_diffuser.start()
+        return (heat_diffuser.node_dict, heat_diffuser.node_dict_rank)
     except Exception as error:
-        raise Exception('Diffuser could not process network with options, error: ' + str(error))
+        raise_exception('DIFFUSER_ERROR', error=str(error))
 
 def merge_heats_and_ranks(heats, ranks):
    """Merges two node dictionarys containing the node heats and node heat ranks"""
    try:
-       timer = time.time()
-       logging.info('Diffusion completed, now merging heats and ranks')
+       log_info('DIFFUSION_COMPLETE')
        merged = {key: { 'heat': heat, 'rank': ranks[key]} for (key, heat) in heats.iteritems() }
-       logTime(timer, 'merge heats and ranks')
        return merged
    except Exception as error:
-       raise Exception('Failed to merge heat and rank diffusion output dictionaries, error: ' + str(error))
+       raise_exception('MERGE_OUTPUT_ERROR', error=str(error))
 
 @app.errorhandler(Exception)
 def internal_error(error):
-    logging.info('Caught an error! Error: ' + str(error))
-    return jsonify(data={}, errors=[{'message': '500: ' + str(error)}]), 500
+    error_type = 'UNEXPECTED_INTERNAL_ERROR'
+    log_error(error_type, error=error)
+    return create_response(errors=[get_error(error_type, error)], code=500)
 
 @app.errorhandler(400)
 def bad_request_error(error):
-    logging.info('Bad request, sending error message')
-    return jsonify(data={}, errors=[{'message': '400: Bad Request, did you send a CX body?'}]), 400
+    error_type = 'BAD_REQUEST_ERROR'
+    log_error(error_type, error=error)
+    return create_response(errors=[get_error(error_type, error)], code=400)
 
 @app.errorhandler(405)
 def method_not_allowed_error(error):
-    logging.info('Incorrect HTTP method used, sending error message')
-    return jsonify(data={}, errors=[{'message': '405: Method not allowed, heat diffusion only accepts POST requests'}]), 405
+    error_type = 'METHOD_NOT_ALLOWED_ERROR'
+    log_error(error_type, error)
+    return create_response(errors=[error], code=405)
+
+def create_response(data={}, errors=[], code=200):
+    return jsonify(data=data, errors=errors), code
 
 @app.route('/', methods=['POST'])
 def service():
     """Diffuses a network represented as cx against an identifier_set"""
-    logging.info('Request received')
+    log_info('REQUEST_RECEIVED')
     CX = parse_CX_body(request)
     networkN = CX_to_NetworkN(CX)
     (heats, ranks) = diffuse(networkN, request.args)
     data = merge_heats_and_ranks(heats, ranks)
-    logging.info('Finished, responding to the request now')
-    return jsonify(data=data, errors=[])
+    log_info('RESPONDING')
+    return create_response(data=data)
 
-def main():
+def start():
     """Starts the diffusion service listening on port 80"""
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-    logging.info('Creating the heat diffusion server')
-    http_server = WSGIServer(('0.0.0.0', 80), jsonApp(app))
-    logging.info('Starting the heat diffusion service on 0.0.0.0:80')
+    if config.LOGGING:
+        logging.basicConfig(stream=sys.stdout, level=config.LOG_LEVEL, format='%(asctime)s %(message)s')
+    log_info('SERVER_INITIALIZING')
+    http_server = WSGIServer((config.ADDRESS, config.PORT), jsonApp(app))
+    log_info('SERVER_READY')
     http_server.serve_forever()

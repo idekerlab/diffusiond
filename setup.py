@@ -22,11 +22,10 @@ setup(
     author_email='eric.david.sage@gmail.com',
     url='https://github.com/ericsage/diffusiond',
     license='MIT License',
-    scripts=['diffuse.py'],
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-          'diffusiond = diffuse:main'
+          'diffusiond = service.server:start'
         ]
     },
     install_requires=[
