@@ -113,10 +113,9 @@ def merge_heats_and_ranks(heats, ranks):
        raise_exception('MERGE_OUTPUT_ERROR', error=str(error))
 
 @app.errorhandler(Exception)
-def internal_error(error):
-    error_type = 'UNEXPECTED_INTERNAL_ERROR'
-    log_error(error_type, error=error)
-    return create_response(errors=[get_error(error_type, error)], code=500)
+def internal_error(exception):
+    error = exception.args
+    return create_response(errors=[error], code=500)
 
 @app.errorhandler(400)
 def bad_request_error(error):
@@ -128,7 +127,7 @@ def bad_request_error(error):
 def method_not_allowed_error(error):
     error_type = 'METHOD_NOT_ALLOWED_ERROR'
     log_error(error_type, error)
-    return create_response(errors=[error], code=405)
+    return create_response(errors=[get_error(error_type, error)], code=405)
 
 def create_response(data={}, errors=[], code=200):
     return jsonify(data=data, errors=errors), code
