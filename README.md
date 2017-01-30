@@ -28,7 +28,7 @@ are ignored.
 If no heatvector is provided, heat values must be specified as network node attributes per the Request Body section 
 above. The attribute name must be "diffusion_input", but can be overridden by the heatattribute query parameter.
 
-For example, you can create the correct query string value in Python like so:
+For example, you can create a heatvector in a query string value in Python like so:
 
 ```python
 import base64
