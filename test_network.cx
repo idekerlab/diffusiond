@@ -1,0 +1,59 @@
+[{"numberVerification":[{"longNumber":281474976710655}]},{"metaData":[{"elementCount":1,"lastUpdate":1461006898764,"name":"ndexStatus","properties":[],"version":"1.0"},{"elementCount":2,"idCounter":5,"name":"nodes"},{"elementCount":1,"idCounter":5,"name":"edges"},{"consistencyGroup":null,"elementCount":1,"lastUpdate":1461006396862,"name":"provenanceHistory","properties":[],"version":"1.0"},{"elementCount":1,"name":"citations","properties":[]},{"elementCount":3,"name":"edgeAttributes","properties":[]},{"elementCount":1,"name":"edgeCitations","properties":[]},{"elementCount":1,"name":"edgeSupports","properties":[]},{"elementCount":1,"name":"networkAttributes","properties":[]},{"elementCount":2,"name":"nodeAttributes","properties":[]},{"elementCount":1,"name":"supports","properties":[]}]},{"ndexStatus":[{"externalId":"ac7f238f-0598-11e6-b550-06603eb7f303","creationTime":1461006396856,"modificationTime":1461006898764,"visibility":"PUBLIC","published":false,"nodeCount":2,"edgeCount":1,"owner":"bgyori","ndexServerURI":"http://54.214.226.184","readOnly":false}]}, {"provenanceHistory":[{"entity":{"creationEvent":{"inputs":null,"startedAtTime":1461006396856,"endedAtTime":1461006396862,"eventType":"File Upload","properties":[{"name":"user","value":"Benjamin Gyori"},{"name":"account name","value":"bgyori"},{"name":"filename","value":"small_example.cx"}]},"uri":"http://public.ndexbio.org/network/ac7f238f-0598-11e6-b550-06603eb7f303","properties":[{"name":"edge count","value":"1"},{"name":"node count","value":"2"},{"name":"dc:title","value":"test_undirected"},{"name":"description","value":""}]}}]}, {"nodes":[{
+  "@id" : 0,
+  "n" : "MAP2K1"
+}, {
+  "@id" : 1,
+  "n" : "MAPK1"
+}]}, {"edges":[{
+  "@id" : 2,
+  "s" : 0,
+  "t" : 1,
+  "i" : "Phosphorylation"
+}]}, {"citations":[{
+  "@id" : 3,
+  "dc:title" : null,
+  "dc:contributor" : null,
+  "dc:identifier" : "pmid:12345",
+  "dc:type" : null,
+  "dc:description" : null,
+  "attributes" : [ ]
+}]}, {"edgeAttributes":[{
+  "po" : 2,
+  "n" : "INDRA statement",
+  "v" : "Phosphorylation(MAP2K1(), MAPK1(), None, None)"
+}, {
+  "po" : 2,
+  "n" : "Text",
+  "v" : "MEK phosphorylates ERK"
+}, {
+  "po" : 2,
+  "n" : "interaction",
+  "v" : "undirected"
+}]}, {"edgeCitations":[{
+  "po" : [ 2 ],
+  "citations" : [ 3 ]
+}]}, {"edgeSupports":[{
+  "po" : [ 2 ],
+  "supports" : [ 4 ]
+}]}, {"networkAttributes":[{
+  "n" : "name",
+  "v" : "test_undirected"
+}]}, {"nodeAttributes":[{
+  "po" : 0,
+  "n" : "HGNC",
+  "v" : "6"
+}, {
+  "po": 0,
+  "n" : "sample",
+  "v" : 1.0
+},
+ {
+  "po" : 1,
+  "n" : "UP",
+  "v" : "P"
+}]}, {"supports":[{
+  "text" : "MEK phosphorylates ERK",
+  "citation" : null,
+  "@id" : 4,
+  "attributes" : [ ]
+}]},{"status":[{"error":"","success":true}]}]
