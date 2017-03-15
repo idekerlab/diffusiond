@@ -1,12 +1,7 @@
 FROM continuumio/anaconda:4.2.0
-MAINTAINER Eric Sage <eric.david.sage@gmail.com>
+
+RUN pip install grpcio-tools networkx
 
 ADD . /app
-WORKDIR /app
 
-RUN pip install -r requirements.txt
-RUN python setup.py install
-
-EXPOSE 5000
-
-CMD ["diffusiond"]
+CMD ["python","/app/heat_diffusion_service.py"]

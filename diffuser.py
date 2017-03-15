@@ -13,12 +13,21 @@ class Diffuser:
 
     def __init__(self, networkN, options):
         self.network = networkN
-        self.time_T = options.get('time', 0.1, float),
-        self.calculate_kernel = options.get('kernel', 'False') == 'True'
-        input_vector= options.get('heatvector', '')
-        diffuse_key= options.get('heatattribute', 'diffusion_input')
-        normalize_laplacian = options.get('normalize', 'False') == 'True'
+        if 'time' in options:
+            self.time_T = float(options['time'])
+        else:
+            self.time_T = 0.1
+        if 'heat_attribute' in options:
+            diffuse_key = options['heat_attribute']
+        else:
+            diffuse_key = 'diffusion_input'
+        if 'normalize_laplacian' in options:
+            normalize_laplacian = (options['normalize_laplacian'] == 'True')
+        else:
+            normalize_laplacian = False
 
+        self.calculate_kernel = False
+        input_vector = ''
         if input_vector != '':
             input_vector = json.loads(base64.b64decode(input_vector))
 
