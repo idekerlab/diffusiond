@@ -1,0 +1,20 @@
+version: '3'
+services:
+  diffusiond:
+    build: .
+    image: ericsage/heat-diffusion:v2.0.0
+    container_name: heat-diffusion
+    expose:
+      - "8080"
+  cxmate:
+    image: ericsage/cxmate-test
+    container_name: cxmate
+    ports:
+      - "80:80"
+      - "8000:8000"
+    environment:
+      - SERVICE_ADDRESS=diffusiond
+      - RECEIVES_ASPECTS=nodes,edges,nodeAttributes
+      - SENDS_ASPECTS=nodeAttributes
+
+

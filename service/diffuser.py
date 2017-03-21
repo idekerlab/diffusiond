@@ -13,22 +13,13 @@ class Diffuser:
 
     def __init__(self, networkN, options):
         self.network = networkN
-        if 'time' in options:
-            self.time_T = float(options['time'])
-        else:
-            self.time_T = 0.1
-        if 'heat_attribute' in options:
-            diffuse_key = options['heat_attribute']
-        else:
-            diffuse_key = 'diffusion_input'
-        if 'normalize_laplacian' in options:
-            normalize_laplacian = (options['normalize_laplacian'] == 'True')
-        else:
-            normalize_laplacian = False
-
+        self.time_t = float(options['time'])
+        diffuse_key = options['input_attribute_name']
+        normalize_laplacian = options['normalize_laplacian'] == 'True'
         self.calculate_kernel = False
-        input_vector = ''
-        if input_vector != '':
+
+        input_vector = None
+        if options.has_key('input_heat'):
             input_vector = json.loads(base64.b64decode(input_vector))
 
         self.node_names = [self.network.node[n]['name'] for n in self.network.nodes_iter()]
@@ -72,7 +63,7 @@ class Diffuser:
             self.node_dict_rank=dict([(sorted_diffused[i][0],i) for i in range(len(sorted_diffused))])
             nx.set_node_attributes(self.network,'diffused_output',self.node_dict)
             nx.set_node_attributes(self.network,'diffused_output_rank',self.node_dict_rank)
-        return self.network
+        return sorted_diffused
 
     def calculateKernel(self,L):
         self.kernel = expm(-self.time_T*L)

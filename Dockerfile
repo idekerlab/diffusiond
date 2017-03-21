@@ -2,6 +2,6 @@ FROM continuumio/anaconda:4.2.0
 
 RUN pip install grpcio-tools networkx
 
-ADD . /app
+ADD ./service /app
 
-CMD ["python","/app/heat_diffusion_service.py"]
+CMD ["python","/app/service.py"]
