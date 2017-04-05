@@ -15,7 +15,7 @@ MIME type must be `application/json`
 The body must be a CX document containing the network, and is encoded as JSON. 
 
 The heatvector can be encoded as node attributes within the network (as Doubles in the range 0..1) or as a query string parameter.
-If it is encode in the network, nodes having heat values must provide the value in "diffusion_input" node attribute. An alternate
+If it is encoded in the network, nodes having heat values must provide the value in "diffusion_input" node attribute. An alternate
 node attribute name can be specified as a query string parameter.
 
 ###Query String Parameters
