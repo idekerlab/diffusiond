@@ -21,7 +21,8 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
               'time': "0.1",
               'normalize_laplacian': 'False',
               'input_attribute_name': 'diffusion_input',
-              'output_attribute_name': 'diffusion_output'
+              'output_attribute_name': 'diffusion_output',
+              'threshold': '0.0'
             }
             network, modified_parameters, errors = self.read_element_stream(element_iterator, diffusion_parameters)
             diffusion_parameters = modified_parameters
@@ -30,9 +31,10 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 sorted_heats = diffuser.start()
                 rank = 1
                 for (node_id, heat) in sorted_heats:
-                    yield self.create_output_attribute(node_id, str(heat), diffusion_parameters['output_attribute_name'], '_heat')
-                    yield self.create_output_attribute(node_id, str(rank), diffusion_parameters['output_attribute_name'], '_rank')
-                    rank += 1
+                    if heat > float(diffusion_parameters['threshold']):
+                        yield self.create_output_attribute(node_id, str(heat), diffusion_parameters['output_attribute_name'], '_heat')
+                        yield self.create_output_attribute(node_id, str(rank), diffusion_parameters['output_attribute_name'], '_rank')
+                        rank += 1
             else:
                 for caught_error in errors:
                     error = self.create_internal_crash_error(caugh_error.message, 500)
