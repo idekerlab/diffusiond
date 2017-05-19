@@ -37,7 +37,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                         rank += 1
             else:
                 for caught_error in errors:
-                    error = self.create_internal_crash_error(caugh_error.message, 500)
+                    error = self.create_internal_crash_error(caught_error.message, 500)
                     log_error(error)
                     yield error
         except Exception as e:
