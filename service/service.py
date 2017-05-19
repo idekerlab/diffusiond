@@ -31,7 +31,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 sorted_heats = diffuser.start()
                 rank = 1
                 for (node_id, heat) in sorted_heats:
-                    if heat > float(diffusion_parameters['threshold']):
+                    if heat >= float(diffusion_parameters['threshold']):
                         yield self.create_output_attribute(node_id, str(heat), diffusion_parameters['output_attribute_name'], '_heat')
                         yield self.create_output_attribute(node_id, str(rank), diffusion_parameters['output_attribute_name'], '_rank')
                         rank += 1
