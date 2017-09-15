@@ -1,3 +1,11 @@
+# Deprecated
+This project is deprecated in favor of the [heat-diffusion](https://github.com/idekerlab/heat-diffusion) project. 
+
+_Please don't use this code unless you're sure of what you're doing._
+
+
+__________________________
+
 #Diffusiond
 Provides a daemon capable of servicing heat diffusion tasks on networks provided as CX or stored in NDEx.  The service operates according to REST protocols. For details see the manuscript "Network propagation in the Cytoscape Cyberinfrastructure. Carlin DE et al. Submitted to PLoS Computational Biology."
 
